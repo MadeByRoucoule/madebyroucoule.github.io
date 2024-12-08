@@ -8,6 +8,7 @@ let nextLevelXp = 100;
 let hireCost = 100;
 let clickUpgradeCost = 500;
 let xpUpgradeCost = 750;
+let slotMachineUnlocked = false;
 
 const balanceElement = document.getElementById('balance');
 const moneyPerClickElement = document.getElementById('MoneyPerClick');
@@ -23,7 +24,7 @@ const secondContainer = document.querySelector('.secondContainer');
 
 const reels = document.querySelectorAll('.reel');
 const spinButton = document.getElementById('spin-button');
-const result = document.getElementById('result');
+const betAmountInput = document.getElementById('bet-amount'); // Champ de saisie pour la mise
 
 const symbols = ['🍒', '🍋', '🍊', '🍇', '🔔', '💎'];
 
@@ -51,13 +52,19 @@ function checkLevelUp() {
         currentXp -= nextLevelXp;
         nextLevelXp = Math.floor(nextLevelXp * 1.5);
         
+        if (level === 5) {
+            slotMachineUnlocked = true;
+            document.querySelector('.slotmachineContainer').style.display = 'flex'; // Afficher la machine à sous
+        }
+
         if (level === 1) {
-    secondContainer.style.display = 'flex';  // ou 'block', selon votre mise en page
-    setTimeout(() => secondContainer.classList.remove('hidden'), 10);
-}
+            secondContainer.style.display = 'flex';
+            setTimeout(() => secondContainer.classList.remove('hidden'), 10);
+        }
     }
     updateDisplay();
 }
+
 
 function generatePassiveIncome() {
     balance += moneyPerSecond;
@@ -65,6 +72,11 @@ function generatePassiveIncome() {
 }
 
 function handleUpgrade(index) {
+    if (level < 1) {
+        alert("Les améliorations ne sont pas encore débloquées !");
+        return;
+    }
+
     switch(index) {
         case 0:
             if (balance >= hireCost) {
@@ -94,8 +106,8 @@ function handleUpgrade(index) {
     updateDisplay();
 }
 
+
 function updateUpgradeButton(index, newCost) {
-    const upgradeButtons = document.querySelectorAll('.money-per-second-upgrade');
     const button = upgradeButtons[index];
     const detailsSpan = button.querySelector('.upgrade-details');
     
@@ -115,38 +127,6 @@ function updateUpgradeButton(index, newCost) {
     detailsSpan.textContent = newText;
 }
 
-function spin() {
-    spinButton.disabled = true; // Désactiver le bouton pendant le spin
-    result.textContent = ''; // Réinitialiser le résultat
-
-    const spins = Array.from(reels).map((reel, index) => {
-        return new Promise(resolve => {
-            const symbolIndex = Math.floor(Math.random() * symbols.length);
-            let turns = 0;
-
-            const interval = setInterval(() => {
-                reel.textContent = symbols[Math.floor(Math.random() * symbols.length)];
-                turns++;
-                if (turns >= 20) { // Arrêter après 20 tours
-                    clearInterval(interval);
-                    reel.textContent = symbols[symbolIndex]; // Afficher le symbole final
-                    resolve(symbolIndex);
-                }
-            }, 100); // Changer le symbole toutes les 100ms
-        });
-    });
-
-    Promise.all(spins).then(results => {
-        if (results[0] === results[1] && results[1] === results[2]) {
-            result.textContent = 'Jackpot !';
-            // Ajoutez ici la logique pour attribuer un prix
-        } else {
-            result.textContent = 'Essayez encore !';
-        }
-        spinButton.disabled = false; // Réactiver le bouton
-    });
-}
-
 function formatNumberWithK(number) {
     if (number >= 1000) {
         return (number / 1000).toFixed(2) + 'k';
@@ -158,11 +138,133 @@ function formatNumberWithSpaces(number) {
     return number.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, " ");
 }
 
+function spinReels() {
+    const betAmount = parseInt(betAmountInput.value); // Récupérer la mise du joueur
+
+    if (isNaN(betAmount) || betAmount <= 0 || betAmount > balance) {
+        alert("Veuillez entrer une mise valide qui est inférieure ou égale à votre solde.");
+        return; // Ne pas continuer si la mise est invalide
+    }
+
+    balance -= betAmount; // Déduire le coût du spin
+    updateDisplay();
+
+    const resultsArray = [];
+    const animations = []; // Pour stocker les promesses d'animation
+
+    reels.forEach((reel, index) => {
+        const animationPromise = new Promise((resolve) => {
+            let spins = 20; // Augmenter le nombre de rotations
+            let currentSpin = 0;
+
+            function animate() {
+                reel.innerHTML = ''; // Vider le contenu précédent
+                for (let i = 0; i < 3; i++) { // Afficher plusieurs symboles pour l'animation
+                    const animatedSymbolDiv = document.createElement('div');
+                    animatedSymbolDiv.className = 'symbol';
+                    animatedSymbolDiv.textContent = symbols[Math.floor(Math.random() * symbols.length)];
+                    reel.appendChild(animatedSymbolDiv);
+                }
+
+                currentSpin++;
+                if (currentSpin < spins) {
+                    setTimeout(() => requestAnimationFrame(animate), 100); // Délai entre chaque spin (100 ms)
+                } else {
+                    // Ajouter le symbole final après les spins
+                    const randomSymbolIndex = Math.floor(Math.random() * symbols.length);
+                    const finalSymbolDiv = document.createElement('div');
+                    finalSymbolDiv.className = 'symbol';
+                    finalSymbolDiv.textContent = symbols[randomSymbolIndex];
+                    reel.innerHTML = ''; // Vider le contenu précédent
+                    reel.appendChild(finalSymbolDiv); // Ajouter le nouveau symbole final
+                    resultsArray.push(symbols[randomSymbolIndex]);
+                    resolve(); // Résoudre la promesse quand l'animation est terminée
+                }
+            }
+
+            animate(); // Démarrer l'animation
+        });
+
+        animations.push(animationPromise); // Ajouter la promesse à la liste
+    });
+
+    Promise.all(animations).then(() => {
+        handleResults(resultsArray, betAmount); // Gérer les résultats après que toutes les animations sont terminées
+    });
+}
+
+function handleResults(resultsArray, betAmount) {
+   // Vérifier les gains
+   const uniqueSymbolsCountMap = {};
+   
+   resultsArray.forEach(symbol => {
+       uniqueSymbolsCountMap[symbol] ? uniqueSymbolsCountMap[symbol]++ : uniqueSymbolsCountMap[symbol] = 1; 
+   });
+
+   let winningsAmount=calculateWinnings(uniqueSymbolsCountMap, betAmount);
+
+   if (winningsAmount > 0) { 
+       balance += winningsAmount;
+
+       displayWin(winningsAmount); // Afficher le gain en vert sur le solde
+   } 
+
+   updateDisplay(); // Mettre à jour l'affichage après avoir montré les résultats
+}
+
+// Fonction pour afficher le gain en vert sur le solde
+function displayWin(amount) {
+    const winDisplayDiv = document.createElement('div');
+    winDisplayDiv.textContent = `+${formatNumberWithSpaces(amount)}€`;
+    winDisplayDiv.style.color = 'green'; // Couleur verte pour les gains
+    winDisplayDiv.style.position = 'absolute'; // Positionner le gain par rapport au conteneur
+    winDisplayDiv.style.transition = 'opacity 1s ease-out, transform 1s ease-out'; // Transition pour l'effet d'apparition/disparition
+    winDisplayDiv.style.opacity = '1';
+    winDisplayDiv.style.fontSize = '20px'; // Taille de police pour le gain
+    winDisplayDiv.style.fontWeight = 'bold'; // Mettre en gras
+    winDisplayDiv.style.transform = 'translateY(-20px)'; // Déplacer légèrement vers le haut
+    winDisplayDiv.style.zIndex = '10'; // S'assurer qu'il est au-dessus des autres éléments
+
+    // Positionner l'élément dans le coin supérieur gauche du conteneur
+    const containerRect = document.querySelector('.slotmachineContainer').getBoundingClientRect();
+    winDisplayDiv.style.left = `${containerRect.left}px`;
+    winDisplayDiv.style.top = `${containerRect.top}px`; // Ajuster la position pour qu'il soit en haut à gauche
+
+    document.body.appendChild(winDisplayDiv); // Ajouter à body pour éviter les problèmes de positionnement
+
+    setTimeout(() => {
+        winDisplayDiv.style.opacity = '0'; // Rendre l'élément transparent après un certain temps
+        winDisplayDiv.style.transform = 'translateY(-40px)'; // Déplacer vers le haut pendant la disparition
+        setTimeout(() => winDisplayDiv.remove(), 1000); // Retirer l'élément après la transition
+    }, 2000); // Afficher pendant deux secondes avant de disparaître
+}
+
+// Fonction pour calculer les gains basés sur les symboles uniques et leurs occurrences
+function calculateWinnings(countMap, betAmount) {
+   let totalWinnings=0;
+
+   for (const [symbol, count] of Object.entries(countMap)) {
+       if (count >= 2) { // Au moins trois symboles identiques pour gagner
+           const winningsMultiplierMap= { 
+               '🍒': betAmount * count * 1,
+               '🍋': betAmount * count * 2,
+               '🍊': betAmount * count * 3,
+               '🍇': betAmount * count * 4,
+               '🔔': betAmount * count * 5,
+               '💎': betAmount * count * 10 
+           };
+           totalWinnings += winningsMultiplierMap[symbol] || 0; 
+       }
+   }
+
+   return totalWinnings; 
+}
+
 setInterval(generatePassiveIncome, 1000);
 
 clickArea.addEventListener('click', handleClick);
 
-spinButton.addEventListener('click', spin);
+spinButton.addEventListener('click', spinReels); // Ajouter l'événement pour le bouton de spin
 
 upgradeButtons.forEach((button, index) => {
     button.addEventListener('click', () => handleUpgrade(index));
