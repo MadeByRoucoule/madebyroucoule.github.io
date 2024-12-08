@@ -1,0 +1,132 @@
+.mainContainer {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    height: 516px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* ----- CREDIT CARD ----- */
+
+.credit-card {
+    background-color: #1a1a2e;
+    color: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    padding: 20px;
+    border-radius: 10px;
+    position: relative;
+    transition: 500ms;
+}
+
+.credit-card:hover {
+    scale: 1.025;
+}
+
+.card-chip {
+    width: 40px;
+    height: 30px;
+    background-color: #ffd700;
+    border-radius: 5px;
+    margin-bottom: 20px;
+}
+
+.card-number {
+    font-size: 1.2em;
+    margin-bottom: 20px;
+    letter-spacing: 2px;
+}
+
+.card-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9em;
+    margin-bottom: 10px;
+}
+
+.card-balance {
+    font-size: 1.2em;
+    text-align: right;
+    margin-top: 10px;
+}
+
+/* ----- STATS SECTION ----- */
+
+.stats-section {
+    background-color: #f9f9f9;
+    border: 3px solid #d0d0d0;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    padding: 15px;
+    transition: 500ms;
+}
+
+
+
+.stats-info {
+    display: flex;
+    justify-content: space-around;
+    margin: -20px;
+}
+
+.level-bar-back {
+    height: 10px;
+    background-color: #e0e0e0;
+    border-radius: 5px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.progress-bar {
+    height: 100%;
+    background-color: #1a1a2e;
+    width: 0%;
+    transition: width 0.1s ease;
+}
+
+.level-stats {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: -7px;
+}
+
+.xp-display {
+    color: #666666;
+}
+
+.level-stats .level {
+    margin: -20px;
+}
+
+/* ----- CLICK AREA ----- */
+
+.click-area {
+    background-color: #f9f9f9;
+    border: 3px solid #d0d0d0;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    height: 200px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: 500ms;
+}
+
+.click-area i {
+    font-size: 50px;
+    color: #c0c0c0;
+    transition: 500ms;
+}
+
+.click-area:hover i {
+    scale: 1.2;
+}
+
+.click-area:active i {
+    scale: 0.8;
+    transition: 100ms;
+}

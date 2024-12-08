@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CardClicker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="styles/core.css">
+    <link rel="stylesheet" href="styles/mainContainer.css">
+    <link rel="stylesheet" href="styles/upgradesContainer.css">
+</head>
+<body>
+    <div class="gameContainer">
+        <div class="mainContainer">
+            <div class="credit-card">
+                <div class="card-chip"></div>
+                <div class="card-number">1234 5678 9012 3456</div>
+                <div class="card-info">
+                    <div class="card-name">VOTRE NOM</div>
+                    <div class="card-expiry">31/12</div>
+                </div>
+                <div class="card-balance">Solde: €<span id="balance">0</span></div>
+            </div>
+            <div class="stats-section">
+                <div class="stats-info">
+                    <div class="money-per-click">
+                        <h5>
+                            €/c :
+                            <span id="MoneyPerClick">1</span>
+                        </h5>
+                    </div>
+                    <div class="money-per-second">
+                        <h5>
+                            €/s :
+                            <span id="MoneyPerSecond">0</span>
+                        </h5>
+                    </div>
+                    <div class="xp-per-click">
+                        <h5>
+                            Xp/c :
+                            <span id="XpPerClick">1</span>
+                        </h5>
+                    </div>
+                </div>
+                <div class="level-bar-back">
+                    <div class="progress-bar" id="levelProgressBar" style="width: 0%;"></div>
+                </div>
+                <div class="level-stats">
+                    <div class="xp-display"><span id="currentXp">0</span></div>
+                    <div class="level"><h4>Lvl. <span id="level">0</span></h4></div>
+                    <div class="xp-display"><span id="nextLevelXp">100</span></div>
+                </div>
+            </div>
+            <div class="click-area">
+                <i class="fas fa-hand-pointer"></i>
+            </div>
+        </div>
+        <div class="secondContainer">
+            <div class="upgradesContainer">
+                <div class="upgrade-item">
+                    <button class="money-per-second-upgrade">
+                        <span class="title">Hire an employee</span>
+                        <span class="upgrade-details">+5 €/s | 100€</span>
+                    </button>
+                </div>
+                <div class="upgrade-item">
+                    <button class="money-per-second-upgrade">
+                        <span class="title">Upgrading the click</span>
+                        <span class="upgrade-details">x2 €/c | 500€</span>
+                    </button>
+                </div>
+                <div class="upgrade-item">
+                    <button class="money-per-second-upgrade">
+                        <span class="title">System improvement</span>
+                        <span class="upgrade-details">+2 Xp/c | 250€</span>
+                    </button>
+                </div>
+            </div>
+            <div class="Container">
+                
+            </div>
+        </div>
+    </div>
+</body>
+</html>
