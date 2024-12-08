@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="styles/core.css">
     <link rel="stylesheet" href="styles/mainContainer.css">
-    <link rel="stylesheet" href="styles/upgradesContainer.css">
+    <link rel="stylesheet" href="styles/secondContainer.css">
 </head>
 <body>
     <div class="gameContainer">
@@ -19,7 +19,7 @@
                     <div class="card-name">VOTRE NOM</div>
                     <div class="card-expiry">31/12</div>
                 </div>
-                <div class="card-balance">Solde: €<span id="balance">0</span></div>
+                <div class="card-balance">Solde: €<span id="balance"></span></div>                  
             </div>
             <div class="stats-section">
                 <div class="stats-info">
@@ -72,14 +72,23 @@
                 <div class="upgrade-item">
                     <button class="money-per-second-upgrade">
                         <span class="title">System improvement</span>
-                        <span class="upgrade-details">+2 Xp/c | 250€</span>
+                        <span class="upgrade-details">+20% Xp/c | 750€</span>
                     </button>
                 </div>
             </div>
-            <div class="Container height 284">
-
-            </div>
+            <div class="slotmachineContainer">
+                <div class="slot-machine">
+                    <div class="reels">
+                        <div class="reel" id="reel1"></div>
+                        <div class="reel" id="reel2"></div>
+                        <div class="reel" id="reel3"></div>
+                    </div>
+                    <button id="spin-button">Jouer</button>
+                </div>
+                <div id="result"></div>
+            </div>            
         </div>
     </div>
+    <script src="game.js"></script>
 </body>
 </html>
