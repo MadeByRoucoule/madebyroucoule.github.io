@@ -9,7 +9,7 @@ html, body{
 }
 
 .top {
-    background-image: url('/assets/fond.jpeg');
+    background-image: url('../assets/fond.jpeg');
     background-color: 191919;
     background-size: cover;
     background-position: center;
